@@ -3,6 +3,8 @@ package com.spike.harrypotter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 public class Basket {
     public static final long PRICE_IN_CENTS = 800L;
@@ -26,7 +28,14 @@ public class Basket {
         Integer copiesOfTheFifthBook = collection.getOrDefault("Harry Potter V", 0);
 
         int[] copiesOfEachBook = new int[]{copiesOfTheFirstBook, copiesOfTheSecondBook, copiesOfTheThirdBook, copiesOfTheFourthBook, copiesOfTheFifthBook};
-        List<Integer> bundleOfSeries = BookBundleFinder.findOn(copiesOfEachBook);
+        List<List<Integer>> allAvailableBundlesIn = BookBundleFinder.findAllAvailableBundlesIn(copiesOfEachBook);
+        LongStream prices = allAvailableBundlesIn.stream().mapToLong((b) -> getPrice(b));
+
+        return prices.min().orElse(0);
+    }
+
+    private long getPrice(List<Integer> allAvailableBundlesIn) {
+        List<Integer> bundleOfSeries = allAvailableBundlesIn;
 
         long totalPrice = 0L;
         for (Integer series : bundleOfSeries) {
