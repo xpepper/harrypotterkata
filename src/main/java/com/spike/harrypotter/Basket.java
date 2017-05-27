@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.LongStream;
-import java.util.stream.Stream;
+
+import static com.spike.harrypotter.BookBundleFinder.findAllAvailableBundlesIn;
 
 public class Basket {
     public static final long PRICE_IN_CENTS = 800L;
@@ -28,21 +29,22 @@ public class Basket {
         Integer copiesOfTheFifthBook = collection.getOrDefault("Harry Potter V", 0);
 
         int[] copiesOfEachBook = new int[]{copiesOfTheFirstBook, copiesOfTheSecondBook, copiesOfTheThirdBook, copiesOfTheFourthBook, copiesOfTheFifthBook};
-        List<List<Integer>> allAvailableBundlesIn = BookBundleFinder.findAllAvailableBundlesIn(copiesOfEachBook);
-        LongStream prices = allAvailableBundlesIn.stream().mapToLong((b) -> getPrice(b));
-
+        List<List<Integer>> allAvailableBundles = findAllAvailableBundlesIn(copiesOfEachBook);
+        LongStream prices = allAvailableBundles.stream().mapToLong(b -> price(b));
         return prices.min().orElse(0);
     }
 
-    private long getPrice(List<Integer> allAvailableBundlesIn) {
-        List<Integer> bundleOfSeries = allAvailableBundlesIn;
-
+    private long price(List<Integer> bundleOfSeries) {
         long totalPrice = 0L;
         for (Integer series : bundleOfSeries) {
-            double discount = DISCOUNT_MAP.get(series);
-            totalPrice += series * discount * PRICE_IN_CENTS;
+            totalPrice += price(series) * PRICE_IN_CENTS;
         }
         return totalPrice;
+    }
+
+    private double price(Integer series) {
+        Double discountPercentage = DISCOUNT_MAP.get(series);
+        return series * discountPercentage;
     }
 
     public void add(int copies, String title) {
