@@ -19,23 +19,27 @@ public class Basket {
         DISCOUNT_MAP.put(5, 0.75);
     }
 
-    private Map<String, Integer> collection = new HashMap<>();
+    private Map<String, Integer> bookCollection = new HashMap<>();
+
+    public void add(int copies, String title) {
+        bookCollection.put(title, copies);
+    }
 
     public long cost() {
-        Integer copiesOfTheFirstBook = collection.getOrDefault("Harry Potter I", 0);
-        Integer copiesOfTheSecondBook = collection.getOrDefault("Harry Potter II", 0);
-        Integer copiesOfTheThirdBook = collection.getOrDefault("Harry Potter III", 0);
-        Integer copiesOfTheFourthBook = collection.getOrDefault("Harry Potter IV", 0);
-        Integer copiesOfTheFifthBook = collection.getOrDefault("Harry Potter V", 0);
+        Integer copiesOfTheFirstBook = bookCollection.getOrDefault("Harry Potter I", 0);
+        Integer copiesOfTheSecondBook = bookCollection.getOrDefault("Harry Potter II", 0);
+        Integer copiesOfTheThirdBook = bookCollection.getOrDefault("Harry Potter III", 0);
+        Integer copiesOfTheFourthBook = bookCollection.getOrDefault("Harry Potter IV", 0);
+        Integer copiesOfTheFifthBook = bookCollection.getOrDefault("Harry Potter V", 0);
 
         int[] copiesOfEachBook = new int[]{copiesOfTheFirstBook, copiesOfTheSecondBook, copiesOfTheThirdBook, copiesOfTheFourthBook, copiesOfTheFifthBook};
         List<List<Integer>> allAvailableBundles = findAllAvailableBundlesIn(copiesOfEachBook);
-        LongStream prices = allAvailableBundles.stream().mapToLong(b -> price(b));
-        return prices.min().orElse(0);
+        return bestPriceFrom(allAvailableBundles);
     }
 
-    public void add(int copies, String title) {
-        collection.put(title, copies);
+    private long bestPriceFrom(List<List<Integer>> bundles) {
+        LongStream prices = bundles.stream().mapToLong(b -> price(b));
+        return prices.min().orElse(0);
     }
 
     private long price(List<Integer> bundleOfSeries) {

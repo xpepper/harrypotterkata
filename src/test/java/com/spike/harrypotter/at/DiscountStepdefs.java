@@ -16,8 +16,8 @@ public class DiscountStepdefs {
 
     @Then("^I must pay (\\d+.?\\d*) EUR$")
     public void I_must_pay(double amount) throws Throwable {
-        long expected = Double.valueOf(amount * 100).longValue();
-        assertEquals(expected, basket.cost());
+        long expectedCost = Double.valueOf(amount * 100).longValue();
+        assertEquals(expectedCost, basket.cost());
     }
 
 }
