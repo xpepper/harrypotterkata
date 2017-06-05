@@ -8,7 +8,7 @@ import java.util.stream.LongStream;
 import static com.spike.harrypotter.BookBundleFinder.findAllAvailableBundlesIn;
 
 public class Basket {
-    public static final long PRICE_IN_CENTS = 800L;
+    private static final long PRICE_IN_CENTS = 800L;
     private static final Map<Integer, Double> DISCOUNT_MAP = new HashMap<>();
 
     {
@@ -34,6 +34,10 @@ public class Basket {
         return prices.min().orElse(0);
     }
 
+    public void add(int copies, String title) {
+        collection.put(title, copies);
+    }
+
     private long price(List<Integer> bundleOfSeries) {
         long totalPrice = 0L;
         for (Integer series : bundleOfSeries) {
@@ -45,9 +49,5 @@ public class Basket {
     private double price(Integer series) {
         Double discountPercentage = DISCOUNT_MAP.get(series);
         return series * discountPercentage;
-    }
-
-    public void add(int copies, String title) {
-        collection.put(title, copies);
     }
 }
